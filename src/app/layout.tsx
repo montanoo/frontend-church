@@ -28,7 +28,7 @@ export default function RootLayout({
     <html lang="en">
       <body
         // data-theme="cupcake"
-        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen bg-white text-black`}
       >
         <Header />
         <main className="flex-1 max-w-[1300px] mx-auto w-full">{children}</main>

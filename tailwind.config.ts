@@ -1,4 +1,4 @@
-import daisyui from "daisyui";
+//import daisyui from "daisyui";
 import type { Config } from "tailwindcss";
 
 export default {
@@ -17,9 +17,5 @@ export default {
         foreground: "var(--foreground)",
       },
     },
-  },
-  plugins: [daisyui],
-  daisyui: {
-    themes: ["dark", "cupcake"],
   },
 } satisfies Config;
