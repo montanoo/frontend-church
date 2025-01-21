@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode } from "react";
 
 interface ModalProps {
   isOpen: boolean;
@@ -6,12 +6,16 @@ interface ModalProps {
   children: ReactNode;
 }
 
-const EventsModal: React.FC<ModalProps> = ({ isOpen, closeModal, children }) => {
+const EventsModal: React.FC<ModalProps> = ({
+  isOpen,
+  closeModal,
+  children,
+}) => {
   if (!isOpen) return null;
 
   return (
     <div
-      className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center"
+      className="fixed z-[99]  top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center"
       onClick={closeModal}
     >
       <div
