@@ -7,6 +7,8 @@ type Option = {
 };
 import { useModal } from "@/hooks/useModal";
 import FullCalendar from "@fullcalendar/react";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import listPlugin from "@fullcalendar/list";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import EventService from "@/requests/Events";
 import DateTimeRangePicker from "../dateTimePicker/DateTimePicker";
@@ -14,13 +16,17 @@ import CostInput from "../input/CostInput";
 import HallService from "@/requests/Hall";
 import EventOrganizerService from "@/requests/EventOrganizer";
 import Dropdown from "../dropdown/Dropdown";
-import HallDropdown from "../dropdown/HallDropdown";      
+import HallDropdown from "../dropdown/HallDropdown";
+import bootstrap5Plugin from "@fullcalendar/bootstrap5";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const EventsPrincipalScreen: React.FC = () => {
-
-  const [dateRange, setDateRange] = useState<{ startDateTime: string; endDateTime: string }>({
-    startDateTime: '',
-    endDateTime: ''
+  const [dateRange, setDateRange] = useState<{
+    startDateTime: string;
+    endDateTime: string;
+  }>({
+    startDateTime: "",
+    endDateTime: "",
   });
 
   const [events, setEvents] = useState([]);
@@ -35,7 +41,7 @@ const EventsPrincipalScreen: React.FC = () => {
       });
   }, []);
 
-  const [halls, setHalls] = useState<Option[]>([]); 
+  const [halls, setHalls] = useState<Option[]>([]);
   const [organizers, setOrganizers] = useState<Option[]>([]);
 
   const [cost, setCost] = useState<number>(0);
@@ -57,38 +63,44 @@ const EventsPrincipalScreen: React.FC = () => {
   const hallIdRef = useRef<HTMLInputElement | null>(null);
 
   const [selectedHall, setSelectedHall] = useState<string | null>(null);
-  const [selectedOrganizer, setSelectedOrganizer] = useState<string | null>(null);
+  const [selectedOrganizer, setSelectedOrganizer] = useState<string | null>(
+    null
+  );
 
   const handleSelectOrganizer = (value: string) => {
-    setSelectedOrganizer(value); 
+    setSelectedOrganizer(value);
   };
 
   const handleSelectHall = (value: string) => {
-    setSelectedHall(value); 
+    setSelectedHall(value);
   };
 
   useEffect(() => {
     HallService.get()
       .then((res) => {
-        const formattedHalls = res.data.map((hall: { id: string; hallName: string }) => ({
-          value: hall.id,  
-          label: hall.hallName, 
-        }));
+        const formattedHalls = res.data.map(
+          (hall: { id: string; hallName: string }) => ({
+            value: hall.id,
+            label: hall.hallName,
+          })
+        );
         setHalls(formattedHalls);
         console.log(formattedHalls, "Halls data");
       })
       .catch((err) => {
         console.log(err);
       });
-  }, []);  
+  }, []);
 
   useEffect(() => {
     EventOrganizerService.get()
       .then((res) => {
-        const formattedOrganizers = res.data.map((organizer: { id: string; name: string }) => ({
-          value: organizer.id,  
-          label: organizer.name, 
-        }));
+        const formattedOrganizers = res.data.map(
+          (organizer: { id: string; name: string }) => ({
+            value: organizer.id,
+            label: organizer.name,
+          })
+        );
         setOrganizers(formattedOrganizers);
         console.log(formattedOrganizers, "Organizers data");
       })
@@ -110,7 +122,6 @@ const EventsPrincipalScreen: React.FC = () => {
     CreateEventsModal.openModal();
   };
 
-
   const handleEventClick = () => {
     DeleteEventsModal.openModal();
   };
@@ -129,20 +140,22 @@ const EventsPrincipalScreen: React.FC = () => {
       capacity: parseInt(hallCapacityRef.current?.value || "0"),
       parishId: 1,
     })
-        .then((res) => {
-          const formattedHalls = res.data.map((hall: { id: string; name: string }) => ({
-           value: hall.id,
-           label: hall.name,
-          }));
-          setHalls(formattedHalls);
-          console.log(formattedHalls, "Halls data after creation");
-        })
-        .catch((err) => {
-          console.log(err);
-        })
-        .finally(() => {
-          CreateHallModal.closeModal();
-        });
+      .then((res) => {
+        const formattedHalls = res.data.map(
+          (hall: { id: string; name: string }) => ({
+            value: hall.id,
+            label: hall.name,
+          })
+        );
+        setHalls(formattedHalls);
+        console.log(formattedHalls, "Halls data after creation");
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        CreateHallModal.closeModal();
+      });
   };
 
   const handleCreateEvent = () => {
@@ -152,19 +165,19 @@ const EventsPrincipalScreen: React.FC = () => {
       cost: cost,
       hallId: selectedHall ? parseInt(selectedHall) : 0,
       organizerId: selectedOrganizer ? parseInt(selectedOrganizer) : 0,
-      startDateTime: new Date(dateRange.startDateTime), 
-      endDateTime: new Date(dateRange.endDateTime),      
+      startDateTime: new Date(dateRange.startDateTime),
+      endDateTime: new Date(dateRange.endDateTime),
     })
-    .then((res) => {
-      setEvents(res.data);
-      console.log(res.data);
-    })
-    .catch((err) => {
-      console.log(err);
-    })
-    .finally(() => {
-      CreateEventsModal.closeModal();
-    });
+      .then((res) => {
+        setEvents(res.data);
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        CreateEventsModal.closeModal();
+      });
   };
 
   const handleCreateOrganizer = () => {
@@ -173,17 +186,17 @@ const EventsPrincipalScreen: React.FC = () => {
       email: organizerEmailRef.current?.value || "",
       phoneNumber: organizerPhoneRef.current?.value || "",
     })
-        .then((res) => {
-          setOrganizers(res.data);
-          console.log(organizers);
-        })
-        .catch((err) => {
-          console.log(err);
-        })
-        .finally(() => {
-          CreateOrganizerModal.closeModal();
-        });
-  }
+      .then((res) => {
+        setOrganizers(res.data);
+        console.log(organizers);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        CreateOrganizerModal.closeModal();
+      });
+  };
 
   return (
     <div className="flex flex-col items-center p-4">
@@ -204,13 +217,12 @@ const EventsPrincipalScreen: React.FC = () => {
           Crear nuevo evento
         </h2>
         <div className="relative border border-gray-300 flex gap-4 items-center p-4">
-
           <span className="absolute -top-2 left-4 bg-white px-2 text-sm font-medium text-gray-600">
             Eventos
           </span>
 
-            <div className="flex flex-col gap-y-4 w-full">
-              <div className="flex items-center gap-4 w-full">
+          <div className="flex flex-col gap-y-4 w-full">
+            <div className="flex items-center gap-4 w-full">
               <label htmlFor="event" className="block font-semibold w-1/3">
                 Evento:
               </label>
@@ -235,15 +247,15 @@ const EventsPrincipalScreen: React.FC = () => {
             </div>
 
             <div>
-
               <DateTimeRangePicker
-              onDateChange={(start, end) => setDateRange({ startDateTime: start, endDateTime: end })}
+                onDateChange={(start, end) =>
+                  setDateRange({ startDateTime: start, endDateTime: end })
+                }
               />
-
             </div>
 
             <div>
-            <CostInput
+              <CostInput
                 label="Costo del evento"
                 value={cost}
                 onChange={setCost}
@@ -252,15 +264,23 @@ const EventsPrincipalScreen: React.FC = () => {
 
             <div className="flex flex-col gap-y-4 w-full">
               <div className="flex items-center gap-4 w-full">
-                <label htmlFor="saloonText" className="block font-semibold w-2/3">
+                <label
+                  htmlFor="saloonText"
+                  className="block font-semibold w-2/3"
+                >
                   Salón
                 </label>
 
-                <HallDropdown options={halls} selected={selectedHall} onSelect={handleSelectHall} ref={hallIdRef}/>
+                <HallDropdown
+                  options={halls}
+                  selected={selectedHall}
+                  onSelect={handleSelectHall}
+                  ref={hallIdRef}
+                />
 
                 <button
-                onClick={handleNewHall}
-                className="flex-col-4 text-[#6AADB4] py-1 px-2 rounded-full shadow hover:py-2 hover:px-3 transition-all duration-500 w-1/3"
+                  onClick={handleNewHall}
+                  className="flex-col-4 text-[#6AADB4] py-1 px-2 rounded-full shadow hover:py-2 hover:px-3 transition-all duration-500 w-1/3"
                 >
                   Agregar salón
                 </button>
@@ -275,7 +295,7 @@ const EventsPrincipalScreen: React.FC = () => {
                 <span className="absolute -top-2 left-4 bg-white px-2 text-sm font-medium text-gray-600">
                   Salones
                 </span>
-                
+
                 <div className="flex flex-col gap-y-4 w-full">
                   {/* Nombre del salón */}
                   <div className="flex items-center gap-4 w-full">
@@ -297,7 +317,7 @@ const EventsPrincipalScreen: React.FC = () => {
                       Capacidad:
                     </label>
                     <input
-                     type="number"
+                      type="number"
                       id="capacity"
                       className="w-full p-1 border border-gray-300 rounded-md"
                       placeholder="Escribe la capacidad del salón"
@@ -305,114 +325,111 @@ const EventsPrincipalScreen: React.FC = () => {
                     />
                   </div>
 
-
-
                   <div className="flex items-center justify-center w-full">
-                  <button 
-                    onClick={handleCreateHall}
-                    className="mt-4 bg-blue-500 text-white py-2 px-6 rounded-full hover:bg-blue-700 transition"
-                  >
-                    Crear salón
-                  </button>
+                    <button
+                      onClick={handleCreateHall}
+                      className="mt-4 bg-blue-500 text-white py-2 px-6 rounded-full hover:bg-blue-700 transition"
+                    >
+                      Crear salón
+                    </button>
+                  </div>
                 </div>
-
-                </div>                  
               </div>
             </CreateHallModal.Modal>
-
-        </div>
+          </div>
         </div>
 
         <div className="relative border border-gray-300 flex gap-4 items-center p-4 mt-4">
-          
           <span className="absolute -top-2 left-4 bg-white px-2 text-sm font-medium text-gray-600">
             Encargado
           </span>
 
           <div className="flex flex-col gap-y-4 w-full">
-              <div className="flex items-center gap-4 w-full">
-                <label htmlFor="saloonText" className="block font-semibold w-2/3">
-                  Encargado
-                </label>
+            <div className="flex items-center gap-4 w-full">
+              <label htmlFor="saloonText" className="block font-semibold w-2/3">
+                Encargado
+              </label>
 
-                <Dropdown options={organizers} selected={selectedOrganizer} onSelect={handleSelectOrganizer} ref={organizerIdRef}/>
+              <Dropdown
+                options={organizers}
+                selected={selectedOrganizer}
+                onSelect={handleSelectOrganizer}
+                ref={organizerIdRef}
+              />
 
-                <button
+              <button
                 onClick={handleNewOrganizer}
                 className="flex-col-4 text-[#6AADB4] py-1 px-2 rounded-full shadow hover:py-2 hover:px-3 transition-all duration-500 w-1/3"
-                >
-                  Agregar encargado
-                </button>
-              </div>
+              >
+                Agregar encargado
+              </button>
             </div>
+          </div>
 
-            <CreateOrganizerModal.Modal
-              isOpen={CreateOrganizerModal.isOpen}
-              closeModal={CreateOrganizerModal.closeModal}
-            >
-              <div className="relative border border-gray-300 flex gap-4 items-center p-4">
-                <span className="absolute -top-2 left-4 bg-white px-2 text-sm font-medium text-gray-600">
-                  Encargados
-                </span>
-                
-                <div className="flex flex-col gap-y-4 w-full">
-                  {/* Nombre del encargado */}
-                  <div className="flex items-center gap-4 w-full">
-                    <label htmlFor="organizer" className="font-semibold w-1/3">
-                      Nombre del encargado:
-                    </label>
-                    <input
-                      type="text"
-                      id="organizer"
-                      className="w-full p-1 border border-gray-300 rounded-md"
-                      placeholder="Escribe el nombre del encargado"
-                      ref={organizerNameRef}
-                    />
-                  </div>
+          <CreateOrganizerModal.Modal
+            isOpen={CreateOrganizerModal.isOpen}
+            closeModal={CreateOrganizerModal.closeModal}
+          >
+            <div className="relative border border-gray-300 flex gap-4 items-center p-4">
+              <span className="absolute -top-2 left-4 bg-white px-2 text-sm font-medium text-gray-600">
+                Encargados
+              </span>
 
-                  {/* Correo electronico */}
-                  <div className="flex items-center gap-4 w-full">
-                    <label htmlFor="email" className="font-semibold w-1/3">
-                      E-mail:
-                    </label>
-                    <input
-                     type="string"
-                      id="email"
-                      className="w-full p-1 border border-gray-300 rounded-md"
-                      placeholder="Escribe el correo del encargado"
-                      ref={organizerEmailRef}
-                    />
-                  </div>
+              <div className="flex flex-col gap-y-4 w-full">
+                {/* Nombre del encargado */}
+                <div className="flex items-center gap-4 w-full">
+                  <label htmlFor="organizer" className="font-semibold w-1/3">
+                    Nombre del encargado:
+                  </label>
+                  <input
+                    type="text"
+                    id="organizer"
+                    className="w-full p-1 border border-gray-300 rounded-md"
+                    placeholder="Escribe el nombre del encargado"
+                    ref={organizerNameRef}
+                  />
+                </div>
 
-                  {/* Número de teléfono del encargado */}
-                  <div className="flex items-center gap-4 w-full">
-                    <label htmlFor="phoneNumber" className="font-semibold w-1/3">
-                      Número de teléfono:
-                    </label>
-                    <input
-                      type="text"
-                      id="phoneNumber"
-                      className="w-full p-1 border border-gray-300 rounded-md"
-                      placeholder="Escribe el nombre del encargado"
-                      ref={organizerPhoneRef}
-                    />
-                  </div>
+                {/* Correo electronico */}
+                <div className="flex items-center gap-4 w-full">
+                  <label htmlFor="email" className="font-semibold w-1/3">
+                    E-mail:
+                  </label>
+                  <input
+                    type="string"
+                    id="email"
+                    className="w-full p-1 border border-gray-300 rounded-md"
+                    placeholder="Escribe el correo del encargado"
+                    ref={organizerEmailRef}
+                  />
+                </div>
 
-                  <div className="flex items-center justify-center w-full">
-                  <button 
+                {/* Número de teléfono del encargado */}
+                <div className="flex items-center gap-4 w-full">
+                  <label htmlFor="phoneNumber" className="font-semibold w-1/3">
+                    Número de teléfono:
+                  </label>
+                  <input
+                    type="text"
+                    id="phoneNumber"
+                    className="w-full p-1 border border-gray-300 rounded-md"
+                    placeholder="Escribe el nombre del encargado"
+                    ref={organizerPhoneRef}
+                  />
+                </div>
+
+                <div className="flex items-center justify-center w-full">
+                  <button
                     onClick={handleCreateOrganizer}
                     className="mt-4 bg-blue-500 text-white py-2 px-6 rounded-full hover:bg-blue-700 transition"
                   >
                     Crear encargado
                   </button>
                 </div>
-
-                </div>                  
               </div>
-            </CreateOrganizerModal.Modal>
-
+            </div>
+          </CreateOrganizerModal.Modal>
         </div>
-
 
         <div className="flex justify-center gap-4">
           <button
@@ -443,14 +460,26 @@ const EventsPrincipalScreen: React.FC = () => {
 
       <div className="w-[50%]">
         <FullCalendar
-          plugins={[dayGridPlugin]}
+          plugins={[dayGridPlugin, timeGridPlugin, listPlugin]}
+          themeSystem="bootstrap5"
           headerToolbar={{
             left: "prev,next today",
             center: "title",
-            right: "dayGridMonth,timeGridWeek,timeGridDay",
+            right: "dayGridMonth,timeGridWeek,timeGridDay,listWeek",
           }}
           initialView="dayGridMonth"
+          eventClassNames={() =>
+            "bg-blue-100 text-blue-800 font-semibold px-2 py-1 rounded-md text-sm cursor-pointer"
+          }
           events={events}
+          buttonText={{
+            today: "today",
+            month: "month",
+            week: "week",
+            day: "day",
+            prev: "←", // 👈 set explicitly
+            next: "→", // 👈 set explicitly
+          }}
           eventClick={handleEventClick}
         />
       </div>

@@ -4,9 +4,10 @@ import Form from "../form/Form";
 import Input from "../input/Input";
 import Button from "../button/Button";
 import AuthService from "@/requests/Auth";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
+  const router = useRouter();
   const usernameRef = useRef<HTMLInputElement | null>(null);
   const passwordRef = useRef<HTMLInputElement | null>(null);
 
@@ -20,7 +21,7 @@ export default function LoginForm() {
     })
       .then((res: unknown) => {
         console.log(res);
-        redirect("/");
+        router.push("/");
       })
       .catch((err: unknown) => {
         console.log(err);

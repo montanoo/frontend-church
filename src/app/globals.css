@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url("https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.11/index.global.min.css");
+@import url("https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@6.1.11/index.global.min.css");
+@import url("https://cdn.jsdelivr.net/npm/@fullcalendar/timegrid@6.1.11/index.global.min.css");
+@import url("https://cdn.jsdelivr.net/npm/@fullcalendar/list@6.1.11/index.global.min.css");
+
 :root {
   --background: #ffffff;
   --foreground: #171717;

@@ -10,7 +10,7 @@ export default async function RootLayout({
   return (
     <>
       <Header />
-      <main className="flex-1">{children}</main>
+      <main className="flex-1 bg-gray-100">{children}</main>
       <Footer />
     </>
   );
